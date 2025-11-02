@@ -1,0 +1,13 @@
+{
+    "name": "nicolas/footclub",
+    "autoload": {
+        "psr-4":
+        { 
+            "Database\\": "src/Database/",
+            "Model\\" : "src/Model/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5"
+    }
+}
