@@ -11,14 +11,14 @@
 
 
 <?php
-include '../autoloader.php';
-Autoloader::register();
+require '../vendor/autoload.php';
 $connexion = Database\databaseConnexion::connexionDatabase();
 
 $id = $_GET["id"];
-$dataPlayer = Model\joueurDatabase::SelectUnJoueur($id, $connexion);
+$id =intval($id);
 
-var_dump($dataPlayer);
+$dataPlayer = Model\joueurDatabase::SelectUnJoueur ($id, $connexion);
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -47,16 +47,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
 
-    if (empty($erreurs)){
+    if (empty($erreurs) && isset($data["modifier"])){
         $player = new Model\Player ($data['prenomJoueur'], $data['nomJoueur'],$data['naissanceJoueur'],$data['imageJoueur']);
-        Model\joueurDatabase::ModifierJoueur($player, $id);
+        Model\joueurDatabase::ModifierJoueur($player, $id, $connexion);
+    }
+    if (isset($data["supprimer"])){
+        Model\joueurDatabase::SupprimerJoueur($id, $connexion);
     }
 }
 ?>
 <body>
     <div class ="contenu">
         <div>
-            <h2>Ajoutez un joueur</h2>
+            <h2>Modifiez les informations d'un joueur</h2>
             <form action="" method="POST">
                 <div>
                     <label for="prenomJoueur">Prenom du joueur *</label>
@@ -65,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         echo "<p>{$erreurs['prenomJoueur']}</p>";
                     }
                     ?>
-                    <input type="text" id="prenomJoueur" value ="<?= $projet[0]["image_projet1"] ?>" name="prenomJoueur" required >
+                    <input type="text" id="prenomJoueur" value ="<?= $dataPlayer[0]["firstname"] ?>" name="prenomJoueur">
                 </div>
                 <div>
                     <label for="nomJoueur">Nom du joueur *</label>
@@ -74,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         echo "<p>{$erreurs['nomJoueur']}</p>";
                     }
                     ?>
-                    <input type="text" id="nomJoueur" value ="<?= $projet[0]["image_projet1"] ?>" name="nomJoueur" required >
+                    <input type="text" id="nomJoueur" value ="<?= $dataPlayer[0]["lastname"] ?>" name="nomJoueur">
                 </div>
                 <div>
                     <label for="naissanceJoueur">Date de naissance du joueur *</label>
@@ -83,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         echo "<p>{$erreurs['naissanceJoueur']}</p>";
                     }
                     ?>
-                    <input type="date" id="naissanceJoueur" value ="<?= $projet[0]["image_projet1"] ?>" name="naissanceJoueur" required >
+                    <input type="date" id="naissanceJoueur" value ="<?= $dataPlayer[0]["birthdate"] ?>" name="naissanceJoueur">
                 </div>
                 <div>
                     <label for="imageJoueur">Image du joueur</label>
@@ -92,10 +95,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         echo "<p>{$erreurs['imageJoueur']}</p>";
                     }
                     ?>
-                    <input type="file" id= "imageJoueur" value ="<?= $projet[0]["image_projet1"] ?>" name="imageJoueur" accept="image/*">
+                    <input type="file" id= "imageJoueur" value ="<?= $dataPlayer[0]["picture"] ?>" name="imageJoueur" accept="image/*">
                 </div>
                 <div>
-                    <button type="submit" name="submit"><a>Ajouter le produit</a></button>
+                    <button type="submit" name="modifier"><a>Modifier le joueur</a></button>
+                    <button type="submit" name="supprimer"><a>Supprimer le joueur</a></button>
                 </div>
             </form>
         </div>

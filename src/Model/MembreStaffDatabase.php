@@ -3,53 +3,53 @@
 namespace Model;
 
 
-class joueurDatabase {
+class MembreStaffDatabase {
 
-    public static function AjoutJoueur (Player $unjoueur, $connexion){
+    public static function AjoutMembreStaff (StaffMember $unMembre, $connexion){
         $requete = $connexion->prepare('
-            INSERT INTO player (firstname, lastname, birthdate , picture) VALUES (
+            INSERT INTO Staff_Member (firstname, lastname, role , picture) VALUES (
             :firstname,
             :lastname,
-            :birthdate,
+            :role,
             :picture
         )');
-        $prenom = $unjoueur->getFirstName();
-        $nom = $unjoueur->getLastName();
-        $naissance = $unjoueur-> getBirthdate();
-        $img = $unjoueur-> getPicture();
+        $prenom = $unMembre->getFirstName();
+        $nom = $unMembre->getLastName();
+        $role = $unMembre-> getrole();
+        $img = $unMembre-> getPicture();
         $requete->bindParam('firstname', $prenom);
         $requete->bindParam('lastname', $nom);
-        $requete->bindParam('birthdate', $naissance);
+        $requete->bindParam('role', $role);
         $requete->bindParam('picture',  $img);
         $requete->execute();
         $produit = $requete->fetchAll(\PDO::FETCH_ASSOC);
     }
-    public static function ModifierJoueur (Player $unjoueur, int $id , $connexion){
+    public static function ModifierMembreStaff (StaffMember $unMembre, int $id , $connexion){
         $requete = $connexion->prepare('
-            UPDATE player SET
+            UPDATE Staff_Member SET
             firstname = :firstname,
             lastname = :lastname,
-            birthdate = :birthdate,
+            role = :role,
             picture = :picture
             WHERE id = :id
         ');
-        $prenom = $unjoueur->getFirstName();
-        $nom = $unjoueur->getLastName();
-        $naissance = $unjoueur-> getBirthdate();
-        $img = $unjoueur-> getPicture();
+        $prenom = $unMembre->getFirstName();
+        $nom = $unMembre->getLastName();
+        $role = $unMembre-> getrole();
+        $img = $unMembre-> getPicture();
         $requete->bindParam('firstname', $prenom);
         $requete->bindParam('lastname', $nom);
-        $requete->bindParam('birthdate', $naissance);
+        $requete->bindParam('role', $role);
         $requete->bindParam('picture',  $img);
         $requete->bindParam('id',  $id);
         $requete->execute();
         $produit = $requete->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public static function SelectUnJoueur (int $id, $connexion){
+    public static function SelectUnMembreStaff (int $id, $connexion){
         $requete = $connexion->prepare('
             SELECT *
-            FROM Player
+            FROM Staff_Member
             WHERE id = :id 
         ');
         $requete->bindParam('id',  $id);
@@ -58,28 +58,19 @@ class joueurDatabase {
         return $produit;
     }
 
-    public static function SelectTousLesJoueurs ($connexion){
+    public static function SelectTousLesMembreStaff ($connexion){
         $requete = $connexion->prepare('
             SELECT *
-            FROM player
+            FROM Staff_Member
         ');
         $requete->execute();
         $produit = $requete->fetchAll(\PDO::FETCH_ASSOC);
         return $produit;
     }
-    public static function SelectJoueurId ($connexion){
+    public static function SupprimerMembreStaff ($id, $connexion){
         $requete = $connexion->prepare('
-            SELECT id, firstname
-            FROM player
-        ');
-        $requete->execute();
-        $produit = $requete->fetchAll(\PDO::FETCH_ASSOC);
-        return $produit;
-    }
-        public static function SupprimerJoueur (int $id , $connexion){
-        $requete = $connexion->prepare('
-            Delete From player
-            Where id = :id
+        Delete From Staff_Member
+        Where id = :id
 
         ');
         $requete->bindParam('id',  $id);
